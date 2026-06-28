@@ -1,0 +1,20 @@
+int buttonsPressed = 0;
+int lastNote = 0;
+
+void loop() {
+  int pressedNotes[4];
+  buttonsPressed = 0;
+
+  if (digitalRead(btnDo) == LOW) pressedNotes[buttonsPressed++] = 262;
+  if (digitalRead(btnRe) == LOW) pressedNotes[buttonsPressed++] = 294;
+  if (digitalRead(btnMi) == LOW) pressedNotes[buttonsPressed++] = 330;
+  if (digitalRead(btnFa) == LOW) pressedNotes[buttonsPressed++] = 349;
+
+  if (buttonsPressed >= 2) {
+    tone(buzzerPin, 392); // Sol chord substitute
+  } else if (buttonsPressed == 1) {
+    tone(buzzerPin, pressedNotes[0]);
+  } else {
+    noTone(buzzerPin);
+  }
+}
