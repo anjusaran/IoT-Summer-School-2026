@@ -1,0 +1,96 @@
+/*
+ * Project: Smart Street Light
+ * Author: Your Name
+ * Date: 28-06-2026
+ */
+
+const int ldrPin = A0;
+const int pirPin = 2;
+const int ledPin = 9;
+
+const int ldrThreshold = 500;
+
+unsigned long motionTime = 0;
+bool motionDetected = false;
+
+void printTimestamp() {
+
+  unsigned long seconds = millis() / 1000;
+
+  int hh = (seconds / 3600) % 24;
+  int mm = (seconds % 3600) / 60;
+  int ss = seconds % 60;
+
+  if (hh < 10) Serial.print("0");
+  Serial.print(hh);
+  Serial.print(":");
+
+  if (mm < 10) Serial.print("0");
+  Serial.print(mm);
+  Serial.print(":");
+
+  if (ss < 10) Serial.print("0");
+  Serial.print(ss);
+}
+
+void setup() {
+
+  pinMode(pirPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+
+  Serial.begin(9600);
+
+}
+
+void loop() {
+
+  int ldrValue = analogRead(ldrPin);
+
+  // DAYTIME
+  if (ldrValue > ldrThreshold) {
+
+    analogWrite(ledPin, 0);
+
+    motionDetected = false;
+
+    Serial.print("[");
+    printTimestamp();
+    Serial.println("] EVENT: Daylight - Street Light OFF");
+
+    delay(1000);
+
+    return;
+  }
+
+  // NIGHT MODE
+
+  if (digitalRead(pirPin) == HIGH) {
+
+    motionDetected = true;
+    motionTime = millis();
+
+    analogWrite(ledPin, 255);
+
+    Serial.print("[");
+    printTimestamp();
+    Serial.println("] EVENT: Motion Detected - LED Full Brightness");
+
+  }
+
+  if (motionDetected) {
+
+    if (millis() - motionTime >= 30000) {
+
+      analogWrite(ledPin, 51);   // 20% brightness
+
+      motionDetected = false;
+
+      Serial.print("[");
+      printTimestamp();
+      Serial.println("] EVENT: No Motion - LED Dimmed");
+
+    }
+
+  }
+
+}
