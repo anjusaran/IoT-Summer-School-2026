@@ -1,0 +1,89 @@
+/*
+ Digital Piano
+ Author: Anju 
+*/
+
+const int buzzer = 8;
+
+const int key1 = 2;
+const int key2 = 3;
+const int key3 = 4;
+const int key4 = 5;
+const int modeButton = 6;
+
+bool majorScale = true;
+bool lastModeState = HIGH;
+
+int majorNotes[4] = {262, 294, 330, 349};   // Do Re Mi Fa
+int minorNotes[4] = {262, 294, 311, 349};   // Do Re Me Fa
+
+void setup() {
+
+  pinMode(key1, INPUT_PULLUP);
+  pinMode(key2, INPUT_PULLUP);
+  pinMode(key3, INPUT_PULLUP);
+  pinMode(key4, INPUT_PULLUP);
+  pinMode(modeButton, INPUT_PULLUP);
+
+  pinMode(buzzer, OUTPUT);
+
+  Serial.begin(9600);
+}
+
+void loop() {
+
+  bool b1 = digitalRead(key1) == LOW;
+  bool b2 = digitalRead(key2) == LOW;
+  bool b3 = digitalRead(key3) == LOW;
+  bool b4 = digitalRead(key4) == LOW;
+
+  bool modeState = digitalRead(modeButton);
+
+  // Toggle Major/Minor
+  if (lastModeState == HIGH && modeState == LOW) {
+
+    majorScale = !majorScale;
+
+    if (majorScale)
+      Serial.println("Major Scale");
+    else
+      Serial.println("Minor Scale");
+
+    delay(200);
+  }
+
+  lastModeState = modeState;
+
+  int pressed = b1 + b2 + b3 + b4;
+
+  // Two or more buttons pressed
+  if (pressed >= 2) {
+
+    tone(buzzer, 392);      // Sol
+  }
+
+  else if (b1) {
+
+    tone(buzzer, majorScale ? majorNotes[0] : minorNotes[0]);
+  }
+
+  else if (b2) {
+
+    tone(buzzer, majorScale ? majorNotes[1] : minorNotes[1]);
+  }
+
+  else if (b3) {
+
+    tone(buzzer, majorScale ? majorNotes[2] : minorNotes[2]);
+  }
+
+  else if (b4) {
+
+    tone(buzzer, majorScale ? majorNotes[3] : minorNotes[3]);
+  }
+
+  else {
+
+    noTone(buzzer);
+  }
+}
