@@ -1,6 +1,6 @@
 /*
  * Project: Traffic Light System
- * Author: Your Name
+ * Author: Anju
  * Date: 28-06-2026
  * Description:
  * Simulates a traffic light with pedestrian crossing.
