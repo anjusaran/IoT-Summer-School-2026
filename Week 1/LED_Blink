@@ -17,8 +17,14 @@ void setup() {
 }
 
 void loop() {
+
+  // Read potentiometer value
   potValue = analogRead(A0);
 
+  // Ensure value stays within the valid ADC range
+  potValue = constrain(potValue, 0, 1023);
+
+  // Convert potentiometer value to delay time
   delayTime = map(potValue, 0, 1023, 100, 1000);
 
   digitalWrite(13, HIGH);
@@ -32,6 +38,10 @@ void loop() {
   Serial.print("Blink count: ");
   Serial.print(blinkCount);
 
-  Serial.print(" Delay: ");
-  Serial.println(delayTime);
+  Serial.print(" | Potentiometer: ");
+  Serial.print(potValue);
+
+  Serial.print(" | Delay: ");
+  Serial.print(delayTime);
+  Serial.println(" ms");
 }
