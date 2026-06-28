@@ -1,0 +1,118 @@
+/*
+ * Project: Serial Command LED Controller
+ * Author: Anju 
+ * Date: 28-06-2026
+ * Description:
+ * Controls the built-in LED using commands received
+ * through the Serial Monitor.
+ */
+
+const int LED = LED_BUILTIN;
+
+String command = "";
+int blinkCounter = 0;
+bool ledState = false;
+
+void setup() {
+
+  pinMode(LED, OUTPUT);
+  digitalWrite(LED, LOW);
+
+  Serial.begin(9600);
+
+  Serial.println("=== Serial LED Controller ===");
+  Serial.println("Commands:");
+  Serial.println("LED_ON");
+  Serial.println("LED_OFF");
+  Serial.println("BLINK_X (X = 1-9)");
+  Serial.println("STATUS");
+  Serial.println("RESET");
+}
+
+void loop() {
+
+  if (Serial.available()) {
+
+    command = Serial.readStringUntil('\n');
+    command.trim();
+
+    // LED ON
+    if (command == "LED_ON") {
+
+      digitalWrite(LED, HIGH);
+      ledState = true;
+
+      Serial.println("LED is ON");
+    }
+
+    // LED OFF
+    else if (command == "LED_OFF") {
+
+      digitalWrite(LED, LOW);
+      ledState = false;
+
+      Serial.println("LED is OFF");
+    }
+
+    // BLINK_X
+    else if (command.startsWith("BLINK_")) {
+
+      String num = command.substring(6);
+      int times = num.toInt();
+
+      if (times >= 1 && times <= 9) {
+
+        Serial.print("Blinking ");
+        Serial.print(times);
+        Serial.println(" times");
+
+        for (int i = 0; i < times; i++) {
+
+          digitalWrite(LED, HIGH);
+          delay(500);
+
+          digitalWrite(LED, LOW);
+          delay(500);
+
+          blinkCounter++;
+        }
+
+      } else {
+
+        Serial.println("ERROR: Blink count must be between 1 and 9");
+      }
+    }
+
+    // STATUS
+    else if (command == "STATUS") {
+
+      Serial.println("------ STATUS ------");
+
+      Serial.print("LED State : ");
+      if (ledState)
+        Serial.println("ON");
+      else
+        Serial.println("OFF");
+
+      Serial.print("Blink Counter : ");
+      Serial.println(blinkCounter);
+
+      Serial.println("--------------------");
+    }
+
+    // RESET
+    else if (command == "RESET") {
+
+      blinkCounter = 0;
+
+      Serial.println("Blink counter reset.");
+    }
+
+    // Invalid command
+    else {
+
+      Serial.println("ERROR: Unknown command");
+    }
+
+  }
+}
