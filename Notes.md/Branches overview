@@ -1,0 +1,19 @@
+# Development Branch Notes
+
+## Branch Purpose
+
+### main
+
+* Stable branch containing completed and tested project work.
+
+### dev
+
+* Development branch used for planning, documentation, and integrating new features before merging into the main branch.
+
+### sensor-module
+
+* Contains code related to IoT sensors such as temperature, humidity, ultrasonic, PIR, gas, and light sensors.
+
+### wireless-module
+
+* Contains code related to wireless communication technologies including Wi-Fi, Bluetooth, BLE, ESP-NOW, MQTT, and LoRa.
