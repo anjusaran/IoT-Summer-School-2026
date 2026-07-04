@@ -1,0 +1,58 @@
+#include <Servo.h>
+
+Servo myServo;
+
+const int potPin = A0;
+const int buttonPin = 2;
+const int servoPin = 9;
+
+bool lastButtonState = LOW;
+
+void setup() {
+  Serial.begin(9600);
+
+  myServo.attach(servoPin);
+
+  pinMode(buttonPin, INPUT);
+}
+
+void loop() {
+
+  // Read potentiometer
+  int potValue = analogRead(potPin);
+
+  // Map to servo angle
+  int angle = map(potValue, 0, 1023, 0, 180);
+
+  // Move servo
+  myServo.write(angle);
+
+  // Display angle
+  Serial.print("Potentiometer: ");
+  Serial.print(potValue);
+  Serial.print("  Angle: ");
+  Serial.println(angle);
+
+  // Read button
+  bool buttonState = digitalRead(buttonPin);
+
+  // Detect button press
+  if (buttonState == HIGH && lastButtonState == LOW) {
+
+    // Sweep 0 -> 180
+    for (int pos = 0; pos <= 180; pos++) {
+      myServo.write(pos);
+      delay(10);
+    }
+
+    // Sweep 180 -> 0
+    for (int pos = 180; pos >= 0; pos--) {
+      myServo.write(pos);
+      delay(10);
+    }
+  }
+
+  lastButtonState = buttonState;
+
+  delay(50);
+}
