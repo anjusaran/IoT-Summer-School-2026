@@ -1,0 +1,139 @@
+=== SENSOR LOG ===
+Time      : 27 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.1 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 5139 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.1 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 10253 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.1 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 15369 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.1 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 20483 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.1 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 25598 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.2 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 30713 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.2 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 35827 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.2 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 40943 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.1 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 46058 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.1 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 51173 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.1 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 56289 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.1 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 61403 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.1 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 66519 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.1 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 71633 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.2 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 76747 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.2 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 81863 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.1 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 86978 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.1 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 92093 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.1 cm
+==================
+
+=== SENSOR LOG ===
+Time      : 97209 ms
+Temp      : nan C | Humidity: nan%
+Light     : 76% (Bright)
+Distance  : 401.1 cm
+==================
