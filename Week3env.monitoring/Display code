@@ -1,0 +1,156 @@
+#include <Keypad.h>
+#include <LiquidCrystal.h>
+
+// LCD
+LiquidCrystal lcd(A0, A1, A2, A3, A4, A5);
+
+// LEDs & Buzzer
+const int greenLED = 10;
+const int redLED = 11;
+const int buzzer = 12;
+
+// Password
+String password = "1234";
+String input = "";
+
+int attempts = 0;
+bool locked = false;
+unsigned long lockTime = 0;
+
+// Keypad
+const byte ROWS = 4;
+const byte COLS = 4;
+
+char keys[ROWS][COLS] = {
+  {'1','2','3','A'},
+  {'4','5','6','B'},
+  {'7','8','9','C'},
+  {'*','0','#','D'}
+};
+
+byte rowPins[ROWS] = {9,8,7,6};
+byte colPins[COLS] = {5,4,3,2};
+
+Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
+
+void setup() {
+
+  pinMode(greenLED, OUTPUT);
+  pinMode(redLED, OUTPUT);
+  pinMode(buzzer, OUTPUT);
+
+  lcd.begin(16,2);
+
+  lcd.print("ENTER PIN:");
+  lcd.setCursor(0,1);
+}
+
+void loop() {
+
+  if(locked){
+
+    if(millis()-lockTime>=10000){
+
+      locked=false;
+      attempts=0;
+
+      lcd.clear();
+      lcd.print("ENTER PIN:");
+      lcd.setCursor(0,1);
+
+    }else{
+
+      lcd.setCursor(0,0);
+      lcd.print("LOCKED 10 SEC ");
+      return;
+    }
+  }
+
+  char key = keypad.getKey();
+
+  if(key){
+
+    if(key=='*'){
+
+      input="";
+      lcd.setCursor(0,1);
+      lcd.print("                ");
+      lcd.setCursor(0,1);
+
+    }
+
+    else if(key=='#'){
+
+      checkPassword();
+
+    }
+
+    else{
+
+      if(input.length()<4){
+
+        input+=key;
+        lcd.print("*");
+
+      }
+
+    }
+
+  }
+
+}
+
+void checkPassword(){
+
+  lcd.clear();
+
+  if(input==password){
+
+    lcd.print("ACCESS GRANTED");
+
+    digitalWrite(greenLED,HIGH);
+
+    tone(buzzer,1000,300);
+
+    delay(2000);
+
+    digitalWrite(greenLED,LOW);
+
+    attempts=0;
+
+  }
+
+  else{
+
+    lcd.print("ACCESS DENIED");
+
+    digitalWrite(redLED,HIGH);
+
+    tone(buzzer,500,1000);
+
+    delay(2000);
+
+    digitalWrite(redLED,LOW);
+
+    attempts++;
+
+    if(attempts>=3){
+
+      locked=true;
+      lockTime=millis();
+
+      lcd.clear();
+      lcd.print("SYSTEM LOCKED");
+      delay(1000);
+
+    }
+
+  }
+
+  input="";
+
+  lcd.clear();
+  lcd.print("ENTER PIN:");
+  lcd.setCursor(0,1);
+
+}
