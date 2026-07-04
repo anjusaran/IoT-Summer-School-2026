@@ -1,0 +1,79 @@
+#include <DHT.h>
+
+#define DHTPIN 2
+#define DHTTYPE DHT22
+
+#define LDR_PIN A0
+
+#define TRIG_PIN 9
+#define ECHO_PIN 10
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(9600);
+dht.begin();
+
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+}
+
+void loop() {
+
+  // Read DHT11
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
+
+  // Read LDR
+  int ldrValue = analogRead(LDR_PIN);
+  int lightPercent = map(ldrValue, 0, 1023, 100, 0);
+
+  String lightStatus;
+
+  if (lightPercent >= 70)
+    lightStatus = "Bright";
+  else if (lightPercent >= 30)
+    lightStatus = "Normal";
+  else
+    lightStatus = "Dark";
+ // Read HC-SR04
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  long duration = pulseIn(ECHO_PIN, HIGH);
+
+  float distance = duration * 0.0343 / 2;
+
+  // Print Output
+  Serial.println("=== SENSOR LOG ===");
+  Serial.print("Time      : ");
+  Serial.print(millis());
+  Serial.println(" ms");
+
+  Serial.print("Temp      : ");
+  Serial.print(temperature, 1);
+  Serial.print(" C | Humidity: ");
+  Serial.print(humidity, 0);
+  Serial.println("%");
+  Serial.print("Light     : ");
+  Serial.print(lightPercent);
+  Serial.print("% (");
+  Serial.print(lightStatus);
+  Serial.println(")");
+
+  Serial.print("Distance  : ");
+  Serial.print(distance, 1);
+  Serial.println(" cm");
+
+  Serial.println("==================");
+  Serial.println();
+
+  delay(5000);
+}
+
+
+
