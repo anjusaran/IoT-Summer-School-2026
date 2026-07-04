@@ -1,0 +1,199 @@
+Q19.
+Arduino provides two important functions for working with analog signals:
+
+analogRead() – Used to read analog input signals from sensors.
+analogWrite() – Used to generate a PWM (Pulse Width Modulation) signal that simulates an analog output.
+
+Although their names are similar, they perform completely different tasks.
+1. analogRead()
+Definition
+
+analogRead() is used to read the voltage applied to one of the Arduino's analog input pins (A0–A5 on the Arduino Uno). The Arduino converts the analog voltage into a digital value using its built-in 10-bit Analog-to-Digital Converter (ADC).
+
+Syntax
+int sensorValue = analogRead(A0);
+
+PRACTICAL EXAMPLE: sMART IRRIGATION SYSTEM
+
+2. analogWrite()
+Definition
+
+analogWrite() is used to generate a PWM (Pulse Width Modulation) signal on specific PWM-capable pins. It does not produce a true analog voltage. Instead, it rapidly switches the pin between HIGH and LOW to create an average output voltage.
+
+Syntax
+analogWrite(9, 128);
+
+PRACTICAL EXAMPLE:AUTOMATIC STREET LIGHTNING
+
+
+
+
+Q20
+# Q20. Explain the `setup()` and `loop()` Functions in Arduino
+
+## Introduction
+
+Every Arduino program (called a **sketch**) must contain two main functions:
+
+* `setup()`
+* `loop()`
+
+These two functions form the basic structure of every Arduino program. The Arduino automatically calls these functions when the board is powered on or reset.
+
+---
+
+# 1. `setup()` Function
+
+## Definition
+
+The `setup()` function runs **only once** when the Arduino is powered on or reset. It is used to initialize the hardware and prepare the board before the main program starts.
+
+### Purpose
+
+Typical tasks performed in `setup()` include:
+
+* Configuring input and output pins using `pinMode()`
+* Starting serial communication with `Serial.begin()`
+* Initializing sensors and communication modules (I2C, SPI, etc.)
+* Setting initial states for LEDs, motors, or relays
+
+### Example
+
+```cpp
+void setup() {
+  pinMode(13, OUTPUT);      // Configure pin 13 as output
+  pinMode(2, INPUT);        // Configure pin 2 as input
+  Serial.begin(9600);       // Start serial communication
+}
+```
+
+**Explanation:**
+
+* Pin 13 is configured as an output to control an LED.
+* Pin 2 is configured as an input to read a sensor or push button.
+* Serial communication begins at 9600 baud.
+
+After `setup()` finishes, it is **not executed again** unless the Arduino is reset or powered off and on again.
+
+---
+
+# 2. `loop()` Function
+
+## Definition
+
+The `loop()` function contains the main program logic. After `setup()` completes, Arduino repeatedly executes `loop()` **forever** as long as the board has power.
+
+### Purpose
+
+Typical tasks performed in `loop()` include:
+
+* Reading sensor values
+* Controlling LEDs, motors, and relays
+* Sending data over serial communication
+* Communicating with IoT platforms
+* Making decisions using `if`, `for`, and `while` statements
+
+### Example
+
+```cpp
+void loop() {
+  digitalWrite(13, HIGH);
+  delay(1000);
+
+  digitalWrite(13, LOW);
+  delay(1000);
+}
+```
+
+This code continuously turns the LED ON for one second and OFF for one second.
+
+---
+
+# What Happens if a Long `delay()` Is Used Inside `loop()`?
+
+The `delay()` function **stops (blocks)** the execution of the program for the specified amount of time. During this delay, the Arduino cannot perform any other tasks.
+
+For example:
+
+```cpp
+void loop() {
+  digitalWrite(13, HIGH);
+  delay(10000);  // Wait for 10 seconds
+}
+```
+
+In this example, the Arduino waits for **10 seconds** before continuing. During this time, it cannot:
+
+* Read sensors
+* Check button presses
+* Receive serial commands
+* Update displays
+* Communicate with IoT devices
+
+---
+
+# Effect on Sensor Reading Responsiveness
+
+Using long delays makes the system **less responsive** because sensor values are checked only after the delay ends.
+
+### Example
+
+Consider a motion sensor connected to an Arduino:
+
+```cpp
+void loop() {
+  delay(5000);
+  int motion = digitalRead(2);
+}
+```
+
+If motion occurs during the 5-second delay, the Arduino will not detect it until the delay is over. This can lead to missed events and poor performance in real-time applications.
+
+### Practical IoT Example
+
+In a **smart security system**, if the Arduino waits for several seconds using `delay()`, it may miss a person walking past the PIR motion sensor. This reduces the reliability of the system.
+
+---
+
+# What Is the Non-Blocking Alternative?
+
+The preferred alternative is to use the **`millis()`** function.
+
+`millis()` returns the number of milliseconds since the Arduino started running. Instead of stopping the program, it allows the Arduino to perform multiple tasks while keeping track of time.
+
+### Example Using `millis()`
+
+```cpp
+const int ledPin = 13;
+unsigned long previousTime = 0;
+const unsigned long interval = 1000;
+bool ledState = LOW;
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  unsigned long currentTime = millis();
+
+  if (currentTime - previousTime >= interval) {
+    previousTime = currentTime;
+
+    ledState = !ledState;
+    digitalWrite(ledPin, ledState);
+  }
+
+  // Other tasks can run continuously here
+}
+```
+
+### Advantages of `millis()`
+
+* Does not block program execution.
+* Sensors can be read continuously.
+* Buttons respond immediately.
+* Multiple tasks can run at the same time.
+* Suitable for real-time and IoT applications.
+
+---
+

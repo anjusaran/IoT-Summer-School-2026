@@ -1,0 +1,35 @@
+
+const int btnMode = 6;
+boolean majorMode = true;
+boolean lastModeState = HIGH;
+
+void loop() {
+  // Mode Toggle Logic (Debounced)
+  boolean currentModeState = digitalRead(btnMode);
+  if (lastModeState == LOW && currentModeState == HIGH) {
+    majorMode = !majorMode;
+  }
+  lastModeState = currentModeState;
+
+  // Notes with Scale Adjustments
+  int freqDo = majorMode ? 262 : 277; // Do / Do# (Minor)
+  int freqRe = majorMode ? 294 : 294; // Re
+  int freqMi = majorMode ? 330 : 311; // Mi / Mib (Minor)
+  int freqFa = majorMode ? 349 : 349; // Fa
+
+  int pressedNotes[4];
+  buttonsPressed = 0;
+
+  if (digitalRead(btnDo) == LOW) pressedNotes[buttonsPressed++] = freqDo;
+  if (digitalRead(btnRe) == LOW) pressedNotes[buttonsPressed++] = freqRe;
+  if (digitalRead(btnMi) == LOW) pressedNotes[buttonsPressed++] = freqMi;
+  if (digitalRead(btnFa) == LOW) pressedNotes[buttonsPressed++] = freqFa;
+
+  if (buttonsPressed >= 2) {
+    tone(buzzerPin, 392); // Sol (Unchanged)
+  } else if (buttonsPressed == 1) {
+    tone(buzzerPin, pressedNotes[0]);
+  } else {
+    noTone(buzzerPin);
+  }
+}
