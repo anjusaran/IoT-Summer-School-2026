@@ -1,0 +1,112 @@
+#include <DHT.h>
+
+// Pin Definitions
+#define DHTPIN 2
+#define RELAY_PIN 3
+#define BUTTON_PIN 4
+
+// DHT Sensor Type
+#define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
+
+// Temperature Thresholds (Hysteresis)
+const float TEMP_HIGH = 32.0; // Turn AC ON
+const float TEMP_LOW = 28.0;  // Turn AC OFF
+
+// State Variables
+bool relayState = false;
+bool manualOverride = false;
+bool lastButtonState = HIGH;
+
+// Debounce variables
+unsigned long lastDebounceTime = 0;
+const unsigned long debounceDelay = 50; 
+
+// Timing for non-blocking temperature reads
+unsigned long lastDHTReadTime = 0;
+const unsigned long dhtInterval = 2000; // Read DHT every 2 seconds
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+  
+  pinMode(RELAY_PIN, OUTPUT);
+  pinMode(BUTTON_PIN, INPUT_PULLUP); // Uses internal pull-up, button connects to GND
+  
+  digitalWrite(RELAY_PIN, LOW); // Start with Relay OFF
+  Serial.println("System Initialized. Monitoring Temperature...");
+}
+
+void loop() {
+  unsigned long currentMillis = millis();
+  
+  // 1. Read Button with Debouncing (Manual Override)
+  int reading = digitalRead(BUTTON_PIN);
+  if (reading != lastButtonState) {
+    lastDebounceTime = currentMillis;
+  }
+  
+  if ((currentMillis - lastDebounceTime) > debounceDelay) {
+    // If the button state has changed and it is pressed (LOW)
+    if (reading == LOW && lastButtonState == HIGH) {
+      manualOverride = !manualOverride; // Toggle override state
+      bool newRelayState = !relayState;  // Force toggle relay
+      
+      Serial.print("[MANUAL OVERRIDE] ");
+      logStateChange(newRelayState, dht.readTemperature());
+      relayState = newRelayState;
+    }
+  }
+  lastButtonState = reading;
+
+  // 2. Read Temperature and Apply Hysteresis Logic (Only if manual override is inactive)
+  if ((currentMillis - lastDHTReadTime) >= dhtInterval) {
+    lastDHTReadTime = currentMillis;
+    
+    float temperature = dht.readTemperature();
+    
+    // Check if reading is valid
+    if (isnan(temperature)) {
+      Serial.println("Error: Failed to read from DHT sensor!");
+      return;
+    }
+
+    if (!manualOverride) {
+      // Hysteresis Logic
+      if (temperature > TEMP_HIGH && !relayState) {
+        logStateChange(true, temperature);
+        relayState = true;
+      } 
+      else if (temperature < TEMP_LOW && relayState) {
+        logStateChange(false, temperature);
+        relayState = false;
+      }
+    } else {
+      // Periodic log reminder that manual mode is active
+      Serial.print("[MANUAL MODE ACTIVE] Current Temp: ");
+      Serial.print(temperature);
+      Serial.print(" °C | Relay State: ");
+      Serial.println(relayState ? "ON" : "OFF");
+    }
+  }
+
+  // 3. Write State to Relay
+  digitalWrite(RELAY_PIN, relayState ? HIGH : LOW);
+}
+
+// Helper function to log state changes cleanly
+void logStateChange(bool newState, float currentTemp) {
+  Serial.print("RELAY STATE CHANGE -> ");
+  if (newState) {
+    Serial.print("ON (AC Starting) ");
+  } else {
+    Serial.print("OFF (AC Stopping)");
+  }
+  Serial.print(" | Temperature: ");
+  if (isnan(currentTemp)) {
+    Serial.println("Unknown °C");
+  } else {
+    Serial.print(currentTemp);
+    Serial.println(" °C");
+  }
+}
